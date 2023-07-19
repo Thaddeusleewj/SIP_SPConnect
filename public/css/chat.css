@@ -1,0 +1,7 @@
+.chat {
+  position: relative;
+}
+
+.chat + .chat {
+  border-top: solid 1px gray;
+}

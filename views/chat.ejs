@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="/socket.io/socket.io.js" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+    />
+    <script
+      src="https://kit.fontawesome.com/825a35d965.js"
+      crossorigin="anonymous"
+    ></script>
+    <link href="./css/chat.css" rel="stylesheet" />
+    <script src="./js/chat.js" defer></script>
+    <title>SPConnect</title>
+  </head>
+  <body>
+    <div id="main" class="max-w-md mx-auto min-h-[100svh] min-h-[100vh]">
+      <nav class="bg-[#A6E3E9] border-gray-200">
+        <div
+          class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4 h-[70px]"
+        >
+          <a href="/" class="flex items-center gap-2">
+            <i class="fa-solid fa-house text-xl"></i>
+            <span class="self-center text-2xl font-bold whitespace-nowrap"
+              >Chat</span
+            >
+          </a>
+          <div class="flex md:order-2">
+            <i class="fa-solid fa-magnifying-glass text-xl"></i>
+          </div>
+        </div>
+      </nav>
+
+      <div class="flex flex-col" id="chatDiv"></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
+  </body>
+</html>
+

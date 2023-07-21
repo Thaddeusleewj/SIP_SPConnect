@@ -17,6 +17,7 @@
       src="https://kit.fontawesome.com/825a35d965.js"
       crossorigin="anonymous"
     ></script>
+    <link href="./css/main.css" rel="stylesheet" />
     <title>SPConnect</title>
   </head>
   <body>
@@ -28,5 +29,11 @@
       Default
     </a>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      if (!(localStorage.getItem("name") && localStorage.getItem("userid"))) {
+        window.location.href = "/start";
+      }
+    </script>
   </body>
 </html>

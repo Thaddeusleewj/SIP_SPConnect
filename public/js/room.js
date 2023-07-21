@@ -8,6 +8,7 @@ document.getElementById("sendChat").addEventListener("click", () => {
   socket.emit("message", {
     message: message,
     roomId: ROOM_ID,
+    userid: localStorage.getItem("name"),
   });
   document.getElementById("chatMessage").value = "";
 });
@@ -15,7 +16,7 @@ document.getElementById("sendChat").addEventListener("click", () => {
 let chatHistory = document.getElementById("chatHistory");
 
 socket.on("clientid", (id) => {
-  socketclientid = id;
+  socketclientid = localStorage.getItem("name");
   console.log(socketclientid);
 });
 
@@ -43,7 +44,7 @@ socket.on("message", (payload) => {
   }
 });
 socket.on("user-connected", (userId) => {
-  console.log("connected");
+  console.log("connected" + userId);
 });
 
 socket.on("user-disconnected", (userId) => {

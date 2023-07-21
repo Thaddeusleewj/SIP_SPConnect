@@ -21,6 +21,7 @@
       src="https://kit.fontawesome.com/825a35d965.js"
       crossorigin="anonymous"
     ></script>
+    <link href="./css/main.css" rel="stylesheet" />
     <link href="../css/room.css" rel="stylesheet" />
     <script src="../js/room.js" defer></script>
     <title>SPConnect</title>
@@ -28,7 +29,7 @@
   <body>
     <div
       id="main"
-      class="max-w-md relative mx-auto min-h-[100svh] min-h-[100vh] max-h-[100svh] max-h-[100vh] overflow-hidden"
+      class="max-w-md relative mx-auto min-h-[100vh] min-h-[100svh] max-h-[100vh] max-h-[100svh] overflow-hidden"
     >
       <nav class="bg-[#A6E3E9] border-gray-200 sticky top-0 w-full z-10">
         <div
@@ -55,29 +56,10 @@
         </div>
       </nav>
       <div
-        class="max-h-[calc(100svh-72px-74px)] overflow-y-scroll py-3 px-2"
+        class="max-h-[calc(100svh-72px-74px)] overflow-y-auto py-3 px-2"
         id="chatHistory"
-      >
-        <div class="chat chat-start">
-          <div class="chat-header">
-            Obi-Wan Kenobi
-            <time class="text-xs opacity-50">12:45</time>
-          </div>
-          <div class="chat-bubble chat-bubble-primary">
-            You were the Chosen One!
-          </div>
-          <div class="chat-footer opacity-50">Delivered</div>
-        </div>
-        <div class="chat chat-end">
-          <div class="chat-header">
-            Anakin
-            <time class="text-xs opacity-50">12:46</time>
-          </div>
-          <div class="chat-bubble">I hate you!</div>
-          <div class="chat-footer opacity-50">Seen at 12:46</div>
-        </div>
-      </div>
-      <div class="fixed bottom-0 w-full min-h-[74px] max-w-md ">
+      ></div>
+      <div class="fixed bottom-0 w-full min-h-[74px] max-w-md">
         <form>
           <label for="chat" class="sr-only">Your message</label>
           <div class="flex items-center p-4 bg-gray-100">
@@ -164,5 +146,11 @@
       </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      if (!(localStorage.getItem("name") && localStorage.getItem("userid"))) {
+        window.location.href = "/start";
+      }
+    </script>
   </body>
 </html>

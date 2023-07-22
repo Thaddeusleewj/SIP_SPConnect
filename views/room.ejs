@@ -21,7 +21,7 @@
       src="https://kit.fontawesome.com/825a35d965.js"
       crossorigin="anonymous"
     ></script>
-    <link href="./css/main.css" rel="stylesheet" />
+    <link href="../css/main.css" rel="stylesheet" />
     <link href="../css/room.css" rel="stylesheet" />
     <script src="../js/room.js" defer></script>
     <title>SPConnect</title>
@@ -45,9 +45,11 @@
             />
             <div class="flex flex-col">
               <div class="w-full flex justify-between items-center">
-                <p class="chatName font-bold">Name</p>
+                <p class="font-bold" id="chatName">Name</p>
               </div>
-              <p class="previousText text-xs text-gray-500">test</p>
+              <p class="previousText text-xs text-gray-500" id="members">
+                test
+              </p>
             </div>
           </div>
           <div class="flex md:order-2 ml-auto">
@@ -151,6 +153,9 @@
       if (!(localStorage.getItem("name") && localStorage.getItem("userid"))) {
         window.location.href = "/start";
       }
+
+      document.getElementById("chatName").innerText =
+        ROOM_ID.split("_")[ROOM_ID.split("_").length - 1];
     </script>
   </body>
 </html>

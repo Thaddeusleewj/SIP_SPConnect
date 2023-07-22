@@ -112,7 +112,7 @@
 
       function submitForm() {
         axios
-          .post("/start", { name: document.getElementById("name").value })
+          .post("/api/start", { name: document.getElementById("name").value })
           .then(({ data }) => {
             localStorage.setItem("userid", data[0]["id"]);
             localStorage.setItem("name", data[0]["name"]);
@@ -127,6 +127,7 @@
               .classList.remove("opacity-0");
           });
       }
+
 
       document.getElementById("form").addEventListener("submit", (e) => {
         e.preventDefault();

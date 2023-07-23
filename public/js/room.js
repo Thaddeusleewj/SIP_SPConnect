@@ -3,6 +3,7 @@ let socketclientid;
 const myPeer = new Peer();
 
 var userArr = [];
+
 function sendMessage() {
   let message = document.getElementById("chatMessage").value;
   if (message == "") return;
@@ -111,3 +112,4 @@ axios
       console.log(err);
     }
   });
+chatHistory.scrollTo(0, chatHistory.scrollHeight);

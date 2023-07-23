@@ -28,12 +28,24 @@
     >
       Default
     </a>
+    <button
+      id="logout"
+      type="button"
+      class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+    >
+      Log Out
+    </button>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
       if (!(localStorage.getItem("name") && localStorage.getItem("userid"))) {
         window.location.href = "/start";
       }
+
+      document.getElementById("logout").addEventListener("click", () => {
+        localStorage.clear();
+        window.location.href = "/start";
+      });
     </script>
   </body>
 </html>

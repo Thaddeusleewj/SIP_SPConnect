@@ -11,6 +11,14 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+const { Configuration, OpenAIApi } = require("openai");
+
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+const openai = new OpenAIApi(configuration);
+
 // Homepage
 app.get("/", (req, res) => {
   res.render("index");
@@ -73,7 +81,7 @@ app.post("/api/start", async (req, res) => {
     console.log(error);
     return res.status(500).send(error);
   }
-  
+
   // default chats
   var { data, error } = await supabase
     .from("user_chat")
@@ -124,6 +132,7 @@ async function uploadMessage(roomId, phoneNo, message) {
     console.log(error);
     return error;
   }
+  return data[0];
 }
 
 // Get chat history
@@ -181,6 +190,52 @@ app.post("/api/chat", async (req, res) => {
   return res.status(200).send();
 });
 
+// Translate API [message from Singlish to English]
+app.post("/api/translate", async (req, res) => {
+  let message = req.body.message;
+  let from = "singlish";
+  let to = "english";
+  let translate = req.body.to;
+  if (translate) {
+    from = "english";
+    to = "singlish";
+  }
+  try {
+    const response = await openai.createCompletion({
+      model: "text-davinci-003",
+      prompt: `translate "${message}" from ${from} to ${to} just give the translation no explanation and only give one response`,
+      temperature: 1,
+      max_tokens: 100,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0,
+    });
+    return res.status(200).send(response.data.choices[0].text.trim());
+  } catch (error) {
+    return res.status(200).send(message);
+  }
+});
+
+// Translate
+app.get("/translate", (req, res) => {
+  res.render("translate");
+});
+
+// Get message
+app.get("/api/message/:id", async (req, res) => {
+  let messageID = req.params.id;
+  var { data, error } = await supabase
+    .from("message")
+    .select()
+    .eq("id", messageID);
+  if (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+  console.log(data);
+  return res.status(200).send(data);
+});
+
 io.on("connection", (socket) => {
   console.log("New user connected");
   socket.emit("clientid", socket.id);
@@ -191,10 +246,16 @@ io.on("connection", (socket) => {
       socket.to(roomId).broadcast.emit("user-disconnected", userID);
     });
   });
-  socket.on("message", (payload) => {
+  socket.on("message", async (payload) => {
     const { roomId, message, userID, phoneNo } = payload;
-    uploadMessage(roomId, phoneNo, message);
-    io.to(roomId).emit("message", { user: userID, message });
+    let output = await uploadMessage(roomId, phoneNo, message);
+    if ("id" in output) {
+      io.to(roomId).emit("message", {
+        user: userID,
+        message,
+        id: output["id"],
+      });
+    }
   });
 });
 

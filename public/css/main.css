@@ -3,5 +3,5 @@
   min-height: 100svh;
   max-height: 100vh;
   max-height: 100svh;
-  overflow-y: hidden;
+  /* overflow-y: hidden; */
 }

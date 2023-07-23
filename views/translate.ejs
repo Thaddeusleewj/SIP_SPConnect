@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="/socket.io/socket.io.js" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    />
+    <script
+      src="https://kit.fontawesome.com/825a35d965.js"
+      crossorigin="anonymous"
+    ></script>
+    <link href="./css/main.css" rel="stylesheet" />
+    <link href="./css/translate.css" rel="stylesheet" />
+    <title>SPConnect</title>
+  </head>
+  <body>
+    <div id="main" class="max-w-md mx-auto relative">
+      <nav class="bg-[#A6E3E9] border-gray-200 sticky">
+        <div
+          class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4 h-[70px]"
+        >
+          <a href="/" class="flex items-center gap-2">
+            <i class="fa-solid fa-house text-xl"></i>
+            <span class="self-center text-2xl font-bold whitespace-nowrap"
+              >Translator</span
+            >
+          </a>
+        </div>
+      </nav>
+      <div
+        class="flex flex-col py-10 gap-5"
+      >
+        <div
+          class="flex items-center justify-center gap-5"
+          id="translateSwitch"
+        >
+          <div
+            class="translateLg w-1/4 text-center order-1 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+            id="Singlish"
+          >
+            Singlish
+          </div>
+          <button
+            class="fa-solid fa-right-left rounded-full p-2 order-2"
+            id="switch"
+          ></button>
+          <div
+            class="translateLg w-1/4 text-center order-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+            id="English"
+          >
+            English
+          </div>
+        </div>
+        <div class="p-5 flex flex-col gap-10">
+          <div class="relative">
+            <textarea
+              id="translateMsg"
+              rows="5"
+              class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter Text"
+            ></textarea>
+            <div class="absolute flex bottom-0 right-0 text-xl gap-3 p-2">
+              <button class="fa-regular fa-clipboard" id="paste"></button>
+              <button class="bi bi-volume-up-fill"></button>
+            </div>
+          </div>
+          <div class="relative">
+            <textarea
+              id="outputMsg"
+              rows="5"
+              class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Translation"
+              disabled
+            ></textarea>
+            <div class="absolute flex bottom-0 right-0 text-xl gap-3 p-2">
+              <button class="fa-regular fa-copy" id="copy"></button>
+              <button class="bi bi-volume-up-fill"></button>
+            </div>
+          </div>
+        </div>
+        <button
+          id="translate"
+          class="w-fit mx-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+        >
+          Translate
+        </button>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      if (!(localStorage.getItem("name") && localStorage.getItem("userid"))) {
+        window.location.href = "/start";
+      }
+    </script>
+    <script>
+      document.getElementById("switch").addEventListener("click", () => {
+        document.getElementById("switch").classList.add("animate-spin");
+        document.getElementById("Singlish").classList.toggle("order-1");
+        document.getElementById("Singlish").classList.toggle("order-3");
+        document.getElementById("English").classList.toggle("order-1");
+        document.getElementById("English").classList.toggle("order-3");
+        document.getElementById("Singlish").classList.add("opacity-80");
+        document.getElementById("English").classList.add("opacity-80");
+        setTimeout(() => {
+          document.getElementById("Singlish").classList.remove("opacity-80");
+          document.getElementById("English").classList.remove("opacity-80");
+          document.getElementById("switch").classList.remove("animate-spin");
+        }, 500);
+      });
+
+      document
+        .getElementById("translateMsg")
+        .addEventListener("keypress", (e) => {
+          if (e.key == "Enter") {
+            translateMessage();
+          }
+        });
+
+      document.getElementById("translateMsg").addEventListener("input", () => {
+        if (document.getElementById("translateMsg").value == "") {
+          document
+            .getElementById("outputMsg")
+            .setAttribute("placeholder", "Translation");
+        }
+      });
+
+      document.getElementById("translate").addEventListener("click", () => {
+        translateMessage();
+      });
+      function translateMessage() {
+        document
+          .getElementById("outputMsg")
+          .setAttribute("placeholder", "Translating...");
+        if (document.getElementById("English").classList.contains("order-3")) {
+          axios
+            .post("/api/translate", {
+              message: document.getElementById("translateMsg").value,
+            })
+            .then(({ data }) => {
+              console.log(data);
+              document.getElementById("outputMsg").value = data;
+            })
+            .catch((err) => {
+              if (err) {
+                console.log(err);
+              }
+            });
+        } else {
+          axios
+            .post("/api/translate", {
+              message: document.getElementById("translateMsg").value,
+              to: "singlish",
+            })
+            .then(({ data }) => {
+              console.log(data);
+              document.getElementById("outputMsg").value = data;
+            })
+            .catch((err) => {
+              if (err) {
+                console.log(err);
+              }
+            });
+        }
+      }
+
+      document.getElementById("copy").addEventListener("click", () => {
+        if (document.getElementById("outputMsg").value) {
+          document.getElementById("outputMsg").disabled = false;
+          document.getElementById("outputMsg").select();
+          document.execCommand("copy");
+          document.getSelection().collapseToEnd();
+          document.getElementById("outputMsg").disabled = true;
+          alert("Text has been copied");
+        }
+      });
+
+      document.getElementById("paste").addEventListener("click", () => {
+        if (navigator.clipboard) {
+          navigator.clipboard.readText().then((pastedText) => {
+            document.getElementById("translateMsg").value = pastedText;
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

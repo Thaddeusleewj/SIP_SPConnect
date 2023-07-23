@@ -36,7 +36,7 @@ socket.on("clientid", (id) => {
   console.log(socketclientid);
 });
 
-function chatMessage(message, user, currentUser, timeSent) {
+function chatMessage(message, user, currentUser, timeSent, id) {
   let chatContainer = document.createElement("div");
   chatContainer.classList.add("chat");
   chatContainer.classList.add(user == currentUser ? "chat-end" : "chat-start");
@@ -52,8 +52,13 @@ function chatMessage(message, user, currentUser, timeSent) {
     "0"
   )}:${String(timeSent.getMinutes()).padStart(2, "0")}`;
   chatHeader.appendChild(chatTime);
+  let translateBtn = document.createElement("button");
+  translateBtn.classList.add("bi", "bi-translate");
+  translateBtn.addEventListener("click", (e) => translate(e));
+  chatHeader.appendChild(translateBtn);
   let chatBubble = document.createElement("div");
   chatBubble.classList.add("chat-bubble", "chat-bubble-primary", "break-words");
+  chatBubble.id = `message-${id}`;
   chatBubble.innerText = message;
   chatContainer.appendChild(chatHeader);
   chatContainer.appendChild(chatBubble);
@@ -61,9 +66,8 @@ function chatMessage(message, user, currentUser, timeSent) {
 }
 
 socket.on("message", (payload) => {
-  const { message, user } = payload;
-  console.log(user);
-  chatMessage(message, user, socketclientid.toString(), new Date());
+  const { message, user, id } = payload;
+  chatMessage(message, user, socketclientid.toString(), new Date(), id);
   if (user.toString() == socketclientid.toString()) {
     chatHistory.scrollTo(0, chatHistory.scrollHeight);
   }
@@ -82,8 +86,10 @@ socket.on("user-disconnected", (userID) => {
 
 myPeer.on("open", (id) => {
   id = localStorage.getItem("name");
+  chatHistory.scrollTo(0, chatHistory.scrollHeight);
   socket.emit("join-room", ROOM_ID, id);
 });
+chatHistory.scrollTo(0, chatHistory.scrollHeight);
 
 axios
   .post(`/api/chat/${ROOM_ID.split("_")[0]}`, {
@@ -96,6 +102,7 @@ axios
     });
     members.innerText = userGroup.join(", ");
     for await (let message of data[0]["message"]) {
+      console.log(message);
       let userObj = data[0]["user"].filter(
         (e) => e["id"] == message["userID"]
       )[0];
@@ -103,7 +110,8 @@ axios
         message["content"],
         userObj["name"],
         localStorage.getItem("name"),
-        new Date(message["created_at"])
+        new Date(message["created_at"]),
+        message["id"]
       );
     }
   })
@@ -112,4 +120,37 @@ axios
       console.log(err);
     }
   });
-chatHistory.scrollTo(0, chatHistory.scrollHeight);
+
+function translate(e) {
+  let messageContainer =
+    e.target.parentNode.parentNode.getElementsByClassName("chat-bubble")[0];
+  if (messageContainer.classList.contains("translate")) {
+    let messageID = messageContainer.id.split("-")[1];
+
+    axios
+      .get(`/api/message/${messageID}`)
+      .then(({ data }) => {
+        messageContainer.innerText = data[0]["content"];
+        messageContainer.classList.remove("translate");
+      })
+      .catch((err) => {
+        if (err) {
+          console.log(err);
+        }
+      });
+  } else {
+    let translateMsg = messageContainer.innerText;
+    axios
+      .post("/api/translate", { message: translateMsg })
+      .then(({ data }) => {
+        console.log(data);
+        messageContainer.innerText = data;
+        messageContainer.classList.add("translate");
+      })
+      .catch((err) => {
+        if (err) {
+          console.log(err);
+        }
+      });
+  }
+}

@@ -21,22 +21,22 @@ const openai = new OpenAIApi(configuration);
 
 // Homepage
 app.get("/", (req, res) => {
-  res.render("index");
+  return res.render("index");
 });
 
 // Whatsapp layout
 app.get("/chat", (req, res) => {
-  res.render("chat");
+  return res.render("chat");
 });
 
 // Internal Chat
 app.get("/room/:ROOM_ID", (req, res) => {
-  res.render("room", { roomId: req.params.ROOM_ID });
+  return res.render("room", { roomId: req.params.ROOM_ID });
 });
 
 // Login
 app.get("/start", (req, res) => {
-  res.render("start");
+  return res.render("start");
 });
 
 // Login POST
@@ -87,7 +87,7 @@ app.post("/api/start", async (req, res) => {
     .from("user_chat")
     .insert([
       { userID: phoneNo, chatID: 1 },
-      // { userID: phoneNo, chatID: 2 },
+      { userID: phoneNo, chatID: 2 },
     ])
     .select();
   if (error) {
@@ -218,7 +218,7 @@ app.post("/api/translate", async (req, res) => {
 
 // Translate
 app.get("/translate", (req, res) => {
-  res.render("translate");
+  return res.render("translate");
 });
 
 // Get message
@@ -228,6 +228,61 @@ app.get("/api/message/:id", async (req, res) => {
     .from("message")
     .select()
     .eq("id", messageID);
+  if (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+  console.log(data);
+  return res.status(200).send(data);
+});
+
+// Event
+app.get("/event", (req, res) => {
+  return res.render("event");
+});
+
+// Get Events
+app.get("/api/event", async (req, res) => {
+  var { data, error } = await supabase
+    .from("event")
+    .select("*, user_event(*)")
+    .order("date_start", { ascending: true });
+  if (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+  console.log(data);
+  return res.status(200).send(data);
+});
+
+// Event Details
+app.get("/event/:id", (req, res) => {
+  return res.render("details", { eventID: req.params.id });
+});
+
+// Get Event Details
+app.get("/api/event/:id", async (req, res) => {
+  let eventID = req.params.id;
+  var { data, error } = await supabase
+    .from("event")
+    .select("*, user_event(*)")
+    .eq("id", eventID);
+  if (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+  console.log(data);
+  return res.status(200).send(data);
+});
+
+// Register Event
+app.post("/api/event/:id", async (req, res) => {
+  let eventID = req.params.id;
+  let userID = req.body.id;
+  var { data, error } = await supabase
+    .from("user_event")
+    .insert([{ userID: userID, eventID: eventID }])
+    .select();
   if (error) {
     console.log(error);
     return res.status(500).send(error);

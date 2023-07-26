@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="/socket.io/socket.io.js" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      const EVENT_ID = "<%= eventID %>";
+    </script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    />
+    <script
+      src="https://kit.fontawesome.com/825a35d965.js"
+      crossorigin="anonymous"
+    ></script>
+    <link href="../css/main.css" rel="stylesheet" />
+    <title>SPConnect</title>
+  </head>
+  <body>
+    <div id="main" class="max-w-md mx-auto relative">
+      <nav class="bg-[#A6E3E9] border-gray-200 sticky">
+        <div
+          class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4 h-[70px]"
+        >
+          <a href="/event" class="flex items-center gap-2">
+            <i class="fa-solid fa-house text-xl"></i>
+            <span class="self-center text-2xl font-bold whitespace-nowrap"
+              >Event</span
+            >
+          </a>
+        </div>
+      </nav>
+
+      <div
+        class="h-[calc(100svh-70px)] p-5 flex flex-col gap-5"
+        id="event"
+      ></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      if (!(localStorage.getItem("name") && localStorage.getItem("userid"))) {
+        window.location.href = "/start";
+      }
+      function formatAMPM(date) {
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? "pm" : "am";
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        var strTime = hours + ":" + minutes + " " + ampm;
+        return strTime;
+      }
+      const monthNames = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+      function formatDate(date) {
+        let day = date.getDate();
+        let month = date.getMonth();
+        let year = date.getFullYear();
+        return `${day} ${monthNames[month].slice(0, 3)} ${year}`;
+      }
+
+      axios
+        .get(`/api/event/${EVENT_ID}`)
+        .then(({ data }) => {
+          console.log(data[0]);
+          let userRegistered =
+            data[0]["user_event"].filter((e) => {
+              return e.userID == localStorage.getItem("userid");
+            }).length > 0;
+          document.getElementById("event").innerHTML = `<img
+          class="aspect-video object-cover w-full rounded-lg"
+          src="${data[0]["img"]}"
+        />
+        <h1 class="font-bold text-3xl text-center">${data[0]["name"]}</h1>
+        <div class="flex flex-col gap-3">
+          <p class="font-bold">
+            Date: <span class="font-normal">${formatDate(
+              new Date(data[0]["date_start"])
+            )} - ${formatDate(new Date(data[0]["date_end"]))}</span>
+          </p>
+          <p class="font-bold">
+            Time: <span class="font-normal">${formatAMPM(
+              new Date(data[0]["date_start"])
+            )} - ${formatAMPM(new Date(data[0]["date_end"]))}</span>
+          </p>
+          <p class="font-bold">
+            Venue: <span class="font-normal">${data[0]["venue"]}</span>
+          </p>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-bold">Description</span>
+          <p>${data[0]["description"]}</p>
+        </div>
+        <div class="flex justify-around">
+          <button
+            id="invite"
+            type="button"
+            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium text-sm py-3 gap-2 px-5 flex items-center justify-center leading-[0px] focus:outline-none rounded-full"
+          >
+            <i class="fa-solid fa-envelope-open-text text-xl"></i>
+            <span>Invite</span>
+          </button>
+          <button
+            id="register"
+            type="button"
+            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium text-sm py-3 gap-2 px-5 flex items-center justify-center leading-[0px] focus:outline-none rounded-full"
+          >
+            <i class="fa-solid fa-file-pen text-xl"></i>
+            <span id="registerText">${
+              userRegistered ? "Registered" : "Register"
+            }</span>
+          </button>
+        </div>
+        `;
+
+          document.getElementById("register").addEventListener("click", () => {
+            axios
+              .post(`/api/event/${EVENT_ID}`, {
+                id: localStorage.getItem("userid"),
+              })
+              .then(({ data }) => {
+                console.log(data);
+                window.location.reload();
+              })
+              .catch((err) => {
+                if (err) {
+                  console.log(err);
+                  alert("Already Registered for event");
+                }
+              });
+          });
+        })
+        .catch((err) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+    </script>
+  </body>
+</html>

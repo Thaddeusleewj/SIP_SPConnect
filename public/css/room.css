@@ -38,7 +38,6 @@
   min-height: 2.75rem;
   min-width: 2.75rem;
   --tw-bg-opacity: 1;
-  background-color: wheat;
   --tw-text-opacity: 1;
   color: hsl(var(--nc) / var(--tw-text-opacity));
 }
@@ -122,4 +121,11 @@
   content: "  [translated]";
   font-size: x-small;
   opacity: 0.75;
+}
+
+.chat-start > .chat-bubble {
+  background-color: #ecd3a1;
+}
+.chat-end > .chat-bubble {
+  background-color: wheat
 }

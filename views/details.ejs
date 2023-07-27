@@ -52,7 +52,7 @@
       function formatAMPM(date) {
         var hours = date.getHours();
         var minutes = date.getMinutes();
-        var ampm = hours >= 12 ? "pm" : "am";
+        var ampm = hours >= 12 ? "PM" : "AM";
         hours = hours % 12;
         hours = hours ? hours : 12; // the hour '0' should be '12'
         minutes = minutes < 10 ? "0" + minutes : minutes;
@@ -116,7 +116,7 @@
           <button
             id="invite"
             type="button"
-            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium text-sm py-3 gap-2 px-5 flex items-center justify-center leading-[0px] focus:outline-none rounded-full"
+            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium text-sm py-3 gap-2 px-5 flex items-center justify-center leading-[0px] focus:outline-none rounded-lg"
           >
             <i class="fa-solid fa-envelope-open-text text-xl"></i>
             <span>Invite</span>
@@ -124,7 +124,7 @@
           <button
             id="register"
             type="button"
-            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium text-sm py-3 gap-2 px-5 flex items-center justify-center leading-[0px] focus:outline-none rounded-full"
+            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium text-sm py-3 gap-2 px-5 flex items-center justify-center leading-[0px] focus:outline-none rounded-lg"
           >
             <i class="fa-solid fa-file-pen text-xl"></i>
             <span id="registerText">${

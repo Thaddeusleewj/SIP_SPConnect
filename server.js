@@ -291,6 +291,104 @@ app.post("/api/event/:id", async (req, res) => {
   return res.status(200).send(data);
 });
 
+// SP Forum
+app.get("/forum", (req, res) => {
+  return res.render("forum");
+});
+
+// Create Post
+app.get("/post", (req, res) => {
+  return res.render("post");
+});
+
+// Create Post API
+app.post("/api/post", async (req, res) => {
+  let { title, content, id } = req.body;
+  var { data, error } = await supabase
+    .from("post")
+    .insert([{ title, content }])
+    .select();
+  if (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+  console.log(data);
+  var { data, error } = await supabase
+    .from("user_post")
+    .insert([{ userID: id, postID: data[0]["id"] }])
+    .select();
+  if (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+  console.log(data);
+  return res.status(200).send(data);
+});
+
+// Get ALL Post
+app.get("/api/post", async (req, res) => {
+  var { data, error } = await supabase
+    .from("user_post")
+    .select("*, user(name), post(*)")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+  console.log(data);
+  var postData = data;
+  var { data, error } = await supabase.from("likes").select("*");
+  if (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+  console.log(data);
+  return res.status(200).send({
+    post: postData,
+    likes: data,
+  });
+});
+
+// Like post
+app.post("/api/post/:id", async (req, res) => {
+  let postID = req.params.id;
+  let userID = req.body.id;
+  var { data, error } = await supabase
+    .from("likes")
+    .select()
+    .eq("userID", userID)
+    .eq("postID", postID);
+  if (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+  if (data.length > 0) {
+    var { error } = await supabase
+      .from("likes")
+      .delete()
+      .eq("userID", userID)
+      .eq("postID", postID);
+    if (error) {
+      console.log(error);
+      return res.status(500).send(error);
+    }
+    console.log("Like deleted");
+    return res.status(204).send();
+  } else {
+    var { data, error } = await supabase
+      .from("likes")
+      .insert([{ userID, postID }])
+      .select();
+    if (error) {
+      console.log(error);
+      return res.status(500).send(error);
+    }
+    console.log(data);
+    return res.status(200).send(data);
+  }
+});
+
 io.on("connection", (socket) => {
   console.log("New user connected");
   socket.emit("clientid", socket.id);

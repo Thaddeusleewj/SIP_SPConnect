@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="/socket.io/socket.io.js" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      const SUPABASE_URL = "<%= supabaseURL %>";
+      const SUPABASE_KEY = "<%= supabaseKEY %>";
+    </script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    />
+    <script
+      src="https://kit.fontawesome.com/825a35d965.js"
+      crossorigin="anonymous"
+    ></script>
+    <link href="./css/main.css" rel="stylesheet" />
+    <link href="./css/leaderboard.css" rel="stylesheet" />
+    <title>SPConnect</title>
+  </head>
+  <body>
+    <div id="main" class="max-w-md mx-auto relative">
+      <nav class="bg-[#A6E3E9] border-gray-200 sticky">
+        <div
+          class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4 h-[70px]"
+        >
+          <a href="/" class="flex items-center gap-2">
+            <i class="fa-solid fa-house text-xl"></i>
+            <span class="self-center text-2xl font-bold whitespace-nowrap"
+              >Leaderboard</span
+            >
+          </a>
+        </div>
+      </nav>
+      <div
+        class="max-h-[calc(100svh-70px)] overflow-y-auto min-h-[calc(100svh-70px)] flex flex-col"
+      >
+        <div class="mb-4">
+          <ul
+            class="flex flex-wrap -mb-px text-sm font-medium text-center justify-center py-2"
+            id="myTab"
+            data-tabs-toggle="#myTabContent"
+            role="tablist"
+          >
+            <li class="mr-2" role="presentation">
+              <button
+                class="inline-block p-3 border-b-2 rounded-t-lg"
+                id="tree-tab"
+                data-tabs-target="#tree"
+                type="button"
+                role="tab"
+                aria-controls="tree"
+                aria-selected="true"
+              >
+                Tree
+              </button>
+            </li>
+            <li class="mr-2" role="presentation">
+              <button
+                class="inline-block p-3 border-b-2 rounded-t-lg border-transparent hover:text-gray-600 hover:border-gray-300"
+                id="individual-tab"
+                data-tabs-target="#individual"
+                type="button"
+                role="tab"
+                aria-controls="individual"
+                aria-selected="false"
+              >
+                Individual
+              </button>
+            </li>
+          </ul>
+        </div>
+        <div id="myTabContent" class="h-full grow flex flex-col">
+          <div
+            class="hidden rounded-lg grow flex flex-col"
+            id="individual"
+            role="tabpanel"
+            aria-labelledby="individual-tab"
+          >
+            <div class="flex justify-end px-5">
+              <i
+                class="bi bi-info-circle text-xl"
+                id="addChat"
+                data-modal-target="authentication-modal"
+                data-modal-toggle="authentication-modal"
+              ></i>
+
+              <!-- Main modal -->
+              <div
+                id="authentication-modal"
+                tabindex="-1"
+                aria-hidden="true"
+                class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full"
+              >
+                <div class="relative w-full max-w-md max-h-full">
+                  <!-- Modal content -->
+                  <div class="relative bg-white rounded-lg shadow">
+                    <button
+                      type="button"
+                      class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
+                      data-modal-hide="authentication-modal"
+                    >
+                      <svg
+                        class="w-3 h-3"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 14 14"
+                      >
+                        <path
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                        />
+                      </svg>
+                      <span class="sr-only">Close modal</span>
+                    </button>
+                    <div class="px-6 py-6 lg:px-8">
+                      <h3
+                        class="mb-4 text-xl font-medium text-gray-900 text-center"
+                      >
+                        <img
+                          src="https://cdn-icons-png.flaticon.com/512/4489/4489655.png"
+                          alt=""
+                          class="aspect-square w-1/3 mx-auto"
+                        />
+                      </h3>
+                      <div class="flex flex-col gap-4">
+                        <ul
+                          role="list"
+                          class="list-disc w-4/5 mx-auto space-y-3"
+                        >
+                          <li>
+                            Participate In events to earn CCA Points which in
+                            turn
+                          </li>
+                          <li>Contributes to overall points to the school</li>
+                          <li>Join events with friends for x1.5 points!</li>
+                          <li>
+                            Join events with foreign students for x2 points!
+                          </li>
+                        </ul>
+                        <button
+                          type="button"
+                          data-modal-target="authentication-modal"
+                          data-modal-toggle="authentication-modal"
+                          class="w-auto mx-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                        >
+                          OK
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex justify-center items-stretch mb-2 h-[100px] mt-8">
+              <div
+                class="bg-[#A6E5E9] rounded-t-2xl w-20 h-4/5 mt-auto flex flex-col justify-center items-center relative"
+                id="second"
+              >
+                <img
+                  src="https://img.freepik.com/free-icon/user_318-563642.jpg?w=360"
+                  class="aspect-square w-14 absolute -top-[55%] border-4 border-[#009BD6] rounded-full"
+                />
+                <p class="font-medium text-sm name">Name</p>
+                <p class="font-bold text-[#009BD6] points text-sm">0</p>
+              </div>
+              <div
+                class="bg-[#71C9CE] rounded-t-2xl w-20 flex flex-col justify-center items-center relative"
+                id="first"
+              >
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/1586/1586967.png"
+                  class="w-1/3 aspect-square absolute -top-[65%]"
+                />
+                <img
+                  src="https://img.freepik.com/free-icon/user_318-563642.jpg?w=360"
+                  class="aspect-square w-14 absolute -top-[40%] border-4 border-[#FB9639] rounded-full"
+                />
+                <p class="font-medium text-sm name">Name</p>
+                <p class="font-bold text-[#FB9639] points text-sm">0</p>
+              </div>
+              <div
+                class="bg-[#A6E5E9] rounded-t-2xl w-20 h-2/3 mt-auto flex flex-col justify-center items-center relative"
+                id="third"
+              >
+                <img
+                  src="https://img.freepik.com/free-icon/user_318-563642.jpg?w=360"
+                  class="aspect-square w-14 absolute -top-[70%] border-4 border-[#00D95F] rounded-full"
+                />
+                <p class="font-medium text-sm name">Name</p>
+                <p class="font-bold text-[#00D95F] points text-sm">0</p>
+              </div>
+            </div>
+            <div
+              class="rounded-t-3xl bg-[#A6E3E9] px-5 py-2 grow flex flex-col"
+              id="individualBoard"
+            ></div>
+          </div>
+          <div
+            class="hidden rounded-lg grow flex flex-col"
+            id="tree"
+            role="tabpanel"
+            aria-labelledby="tree-tab"
+          >
+            <div class="flex h-[200px] justify-center relative">
+              <img
+                src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExam1pZmt3N2ZtdGR5ejByajZodnliaDU2aWI1cTJrOXRmbWx5YmgxcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/mM5WHUQ7rN4OuDCFfB/giphy.gif"
+                class="absolute w-[65px] aspect-square object-contain bottom-[20px] left-1/2 hidden"
+                id="waterCan"
+              />
+              <img
+                src="./img/1.png"
+                id="treeImg"
+                class="w-[200px] aspect-square object-contain"
+              />
+            </div>
+            <div
+              class="rounded-t-3xl bg-[#A6E3E9] px-5 py-2 grow flex flex-col"
+              id="treeBoard"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      if (!(localStorage.getItem("name") && localStorage.getItem("userid"))) {
+        window.location.href = "/start";
+      }
+
+      var score = 0;
+
+      let tabButton = document.querySelectorAll("button[role='tab']");
+
+      for (let tab of tabButton) {
+        tab.addEventListener("click", () => {
+          setTimeout(() => {
+            populateData();
+          }, 20);
+        });
+      }
+
+      async function populateData() {
+        score = 0;
+        for (var tab of tabButton) {
+          if (tab.getAttribute("aria-selected") == "true") {
+            break;
+          }
+        }
+        if (tab.getAttribute("aria-controls") != "tree") {
+          await axios
+            .get("/api/leaderboard")
+            .then(({ data }) => {
+              document.getElementById("individualBoard").innerHTML = "";
+              console.log(data);
+              for (let users of data) {
+                points = 0;
+                for (let task of users["task"]) {
+                  points += task["points"];
+                }
+                users["points"] = points;
+                score += points;
+                console.log(users);
+              }
+              data.sort((a, b) => {
+                return b.points - a.points;
+              });
+              console.log(data);
+              const idArr = ["first", "second", "third"];
+              for (let i = 0; i < data.length; i++) {
+                if (i < idArr.length) {
+                  document
+                    .getElementById(idArr[i])
+                    .querySelector(".name").innerHTML = data[i]["name"];
+                  document
+                    .getElementById(idArr[i])
+                    .querySelector(".points").innerHTML = data[i]["points"];
+                } else {
+                  document.getElementById("individualBoard").innerHTML += `
+                    <div class="pos flex gap-4 items-center py-4 px-2">
+                      <img
+                        src="https://img.freepik.com/free-icon/user_318-563642.jpg?w=360"
+                        class="aspect-square w-12"
+                      />
+                      <p class="grow font-medium text-sm">${data[i]["name"]}</p>
+                      <div class="font-bold flex gap-2">
+                        <i class="bi bi-caret-up-fill text-green-500"></i>
+                        <p>${data[i]["points"]}</p>
+                      </div>
+                    </div>
+                    `;
+                }
+              }
+            })
+            .catch((err) => {
+              if (err) {
+                console.log(err);
+              }
+            });
+        } else {
+          await axios
+            .get("/api/task")
+            .then(({ data }) => {
+              document.getElementById("treeBoard").innerHTML = "";
+              console.log(data);
+              for (let history of data) {
+                score += history["task"]["points"];
+                document.getElementById("treeBoard").innerHTML =
+                  `
+                  <div class="pos flex gap-4 items-center py-4 px-2">
+                    <div class="flex flex-col grow">
+                      <p class="font-medium text-sm">${history["user"]["name"]}</p>
+                      <p class="text-xs">${history["task"]["name"]}</p>
+                    </div>
+                    <p class="font-bold flex gap-2">
+                      + ${history["task"]["points"]}
+                    </p>
+                  </div>
+                  ` + document.getElementById("treeBoard").innerHTML;
+              }
+            })
+            .catch((err) => {
+              if (err) {
+                console.log(err);
+              }
+            });
+        }
+      }
+
+      const scoreMultiplier = 0.05;
+
+      function updateTree() {
+        let direction = Math.round(Math.random());
+        if (direction == 0) {
+          document.getElementById("waterCan").classList.add("left-1/2");
+          document.getElementById("waterCan").classList.remove("left-[30%]");
+          document.getElementById("waterCan").classList.remove("-scale-x-100");
+        } else {
+          document.getElementById("waterCan").classList.remove("left-1/2");
+          document.getElementById("waterCan").classList.add("left-[30%]");
+          document.getElementById("waterCan").classList.add("-scale-x-100");
+        }
+        document.getElementById("waterCan").classList.remove("hidden");
+        setTimeout(() => {
+          document.getElementById("waterCan").classList.add("hidden");
+          document.getElementById("treeImg").src = `./img/${Math.min(
+            Math.floor(score * scoreMultiplier) + 1,
+            6
+          )}.png`;
+        }, 1000);
+      }
+
+      async function onLoad() {
+        await populateData();
+        await updateTree();
+      }
+
+      onLoad();
+    </script>
+    <script type="module" src="./js/leaderboard.js"></script>
+  </body>
+</html>

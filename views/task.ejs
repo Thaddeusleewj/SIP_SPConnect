@@ -29,12 +29,20 @@
           <a href="/" class="flex items-center gap-2">
             <i class="fa-solid fa-house text-xl"></i>
             <span class="self-center text-2xl font-bold whitespace-nowrap"
-              >Template</span
+              >Task</span
             >
           </a>
         </div>
       </nav>
-      <div class="overflow-y-auto max-h-[calc(100svh-70px)] p-5"></div>
+      <div class="max-h-[calc(100svh-70px)] overflow-y-auto p-5" id="tasks">
+        <div class="flex justify-between items-center">
+          <div class="flex flex-col">
+            <p class="font-bold">Task Name</p>
+            <p class="text-xs truncate">Description</p>
+          </div>
+          <p class="text-xl font-bold">+&nbsp;<span>3</span></p>
+        </div>
+      </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -42,6 +50,23 @@
       if (!(localStorage.getItem("name") && localStorage.getItem("userid"))) {
         window.location.href = "/start";
       }
+
+      axios
+        .post("/api/task", { id: localStorage.getItem("userid") })
+        .then(({ data }) => {
+          for (let task of data) {
+            console.log(data);
+            if (task["user_task"].length > 0) {
+              continue;
+            }
+            document.getElementById("tasks").innerHTML += ``;
+          }
+        })
+        .catch((err) => {
+          if (err) {
+            console.log(err);
+          }
+        });
     </script>
   </body>
 </html>

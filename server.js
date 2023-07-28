@@ -389,6 +389,83 @@ app.post("/api/post/:id", async (req, res) => {
   }
 });
 
+// Task
+app.get("/task", (req, res) => {
+  return res.render("task");
+});
+
+// Get Task
+app.post("/api/task", async (req, res) => {
+  let userID = req.body.id;
+  var { data, error } = await supabase
+    .from("task")
+    .select("*, user_task(*)")
+    .eq("user_task.userID", userID);
+  if (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+  console.log(data);
+  return res.status(200).send(data);
+});
+
+// Get Specific Task
+app.post("/api/task/:id", async (req, res) => {
+  let taskID = req.params.id;
+  let userID = req.body.id;
+  var { data, error } = await supabase
+    .from("task")
+    .select("*, user(*)")
+    .eq("id", taskID)
+    .eq("user.id", userID);
+  if (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+  console.log(data);
+  return res.status(200).send(data);
+});
+
+// Get Task History
+app.get("/api/task", async (req, res) => {
+  var { data, error } = await supabase
+    .from("user_task")
+    .select("*, task(*), user(name)");
+  if (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+  console.log(data);
+  return res.status(200).send(data);
+});
+
+// Leaderboard
+app.get("/leaderboard", async (req, res) => {
+  const SUPABASE_URL = process.env.SUPABASE_URL;
+  const SUPABASE_KEY = process.env.SUPABASE_KEY;
+  return res.render("leaderboard", {
+    supabaseURL: SUPABASE_URL,
+    supabaseKEY: SUPABASE_KEY,
+  });
+});
+
+// Get Leaderboard
+app.get("/api/leaderboard", async (req, res) => {
+  var { data, error } = await supabase
+    .from("user")
+    .select("*, task(*), user_task(*)")
+    .order("created_at", {
+      foreignTable: "user_task",
+      ascending: false,
+    });
+  if (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+  console.log(data);
+  return res.status(200).send(data);
+});
+
 io.on("connection", (socket) => {
   console.log("New user connected");
   socket.emit("clientid", socket.id);

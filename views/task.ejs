@@ -17,6 +17,7 @@
       src="https://kit.fontawesome.com/825a35d965.js"
       crossorigin="anonymous"
     ></script>
+    <link href="./css/task.css" rel="stylesheet" />
     <link href="./css/main.css" rel="stylesheet" />
     <title>SPConnect</title>
   </head>
@@ -34,14 +35,20 @@
           </a>
         </div>
       </nav>
-      <div class="max-h-[calc(100svh-70px)] overflow-y-auto p-5" id="tasks">
-        <div class="flex justify-between items-center">
-          <div class="flex flex-col">
-            <p class="font-bold">Task Name</p>
-            <p class="text-xs truncate">Description</p>
-          </div>
-          <p class="text-xl font-bold">+&nbsp;<span>3</span></p>
-        </div>
+      <h1 class="text-xl font-bold text-center underline pt-5 pb-3">
+        Task List
+      </h1>
+      <div
+        class="max-h-[calc(100svh-70px-70px-60px)] min-h-[calc(100svh-70px-70px-60px)] overflow-y-auto px-5 flex flex-col"
+        id="tasks"
+      ></div>
+      <div class="pt-3 mx-auto w-full flex justify-center">
+        <a
+          href="/leaderboard"
+          class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 hover:bg-blue-800"
+        >
+          Visit Leaderboard
+        </a>
       </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
@@ -49,6 +56,23 @@
     <script>
       if (!(localStorage.getItem("name") && localStorage.getItem("userid"))) {
         window.location.href = "/start";
+      }
+
+      function updateTask(id) {
+        console.log(id);
+        axios
+          .post(`/api/completeTask/${id}`, {
+            id: localStorage.getItem("userid"),
+          })
+          .then(({ data }) => {
+            console.log(data);
+            window.location.reload();
+          })
+          .catch((err) => {
+            if (err) {
+              console.log(err);
+            }
+          });
       }
 
       axios
@@ -59,7 +83,20 @@
             if (task["user_task"].length > 0) {
               continue;
             }
-            document.getElementById("tasks").innerHTML += ``;
+            document.getElementById(
+              "tasks"
+            ).innerHTML += `<button class="flex justify-between items-center text-start task px-2 py-4 hover:bg-slate-100 " onclick="updateTask(${task.id})">
+          <div class="flex flex-col justify-start items-start min-w-[calc(100%-50px)] max-w-[calc(100%-50px)]">
+            <p class="font-bold  max-w-full ">${task.name}</p>
+            <p class="text-xs truncate max-w-full">${task.description}</p>
+          </div>
+          <p class="text-xl font-bold w-[50px] flex justify-end gap-1"><span>+</span><span>${task.points}</span></p>
+        </button>`;
+          }
+          if (document.getElementById("tasks").children.length == 0) {
+            document.getElementById(
+              "tasks"
+            ).innerHTML += `<div class="text-2xl font-bold text-center py-5">No Task Available</div>`;
           }
         })
         .catch((err) => {

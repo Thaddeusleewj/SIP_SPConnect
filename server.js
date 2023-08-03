@@ -55,13 +55,17 @@ app.post("/api/start", async (req, res) => {
     phoneNo = parseInt(phoneNo);
   }
 
+  if (name == "") {
+    console.log("Invalid Name");
+    return res.status(500).send("Invalid Name");
+  }
+
   // check if exist
   var { data, error } = await supabase
     .from("user")
     .select("*")
     .eq("id", phoneNo)
     .eq("name", name);
-  console.log(`Check Exist: ${data}234`);
   if (error) {
     console.log(error);
     return res.status(500).send(error);
@@ -79,7 +83,12 @@ app.post("/api/start", async (req, res) => {
   var userData = JSON.parse(JSON.stringify(data));
   if (error) {
     console.log(error);
-    return res.status(500).send(error);
+    if (error.details.includes("Key (name)")) {
+      return res.status(500).send("Name Already Exist");
+    } else if (error.details.includes("Key (id)")) {
+      return res.status(500).send("Phone No. Already Exist");
+    }
+    return res.status(500).send("Server Error");
   }
 
   // default chats
@@ -203,7 +212,7 @@ app.post("/api/translate", async (req, res) => {
   try {
     const response = await openai.createCompletion({
       model: "text-davinci-003",
-      prompt: `translate "${message}" from ${from} to ${to} just give the translation no explanation and only give one response`,
+      prompt: `translate "${message}" to ${to} just give the translation no explanation and only give one response`,
       temperature: 1,
       max_tokens: 100,
       top_p: 1,
@@ -400,7 +409,8 @@ app.post("/api/task", async (req, res) => {
   var { data, error } = await supabase
     .from("task")
     .select("*, user_task(*)")
-    .eq("user_task.userID", userID);
+    .eq("user_task.userID", userID)
+    .order("points", { ascending: false });
   if (error) {
     console.log(error);
     return res.status(500).send(error);
@@ -426,11 +436,28 @@ app.post("/api/task/:id", async (req, res) => {
   return res.status(200).send(data);
 });
 
+// Complete Task
+app.post("/api/completeTask/:id", async (req, res) => {
+  let taskID = req.params.id;
+  let userID = req.body.id;
+  var { data, error } = await supabase
+    .from("user_task")
+    .insert({ userID, taskID })
+    .select();
+  if (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+  console.log(data);
+  return res.status(200).send(data);
+});
+
 // Get Task History
 app.get("/api/task", async (req, res) => {
   var { data, error } = await supabase
     .from("user_task")
-    .select("*, task(*), user(name)");
+    .select("*, task(*), user(name)")
+    .order("created_at", { ascending: true });
   if (error) {
     console.log(error);
     return res.status(500).send(error);

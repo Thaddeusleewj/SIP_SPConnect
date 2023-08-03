@@ -100,6 +100,7 @@ axios
     var userGroup = data[0]["user"].map((e) => {
       return e["name"];
     });
+    userGroup = userGroup.sort();
     members.innerText = userGroup.join(", ");
     for await (let message of data[0]["message"]) {
       console.log(message);

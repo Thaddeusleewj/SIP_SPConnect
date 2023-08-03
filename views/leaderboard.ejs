@@ -40,16 +40,16 @@
         </div>
       </nav>
       <div
-        class="max-h-[calc(100svh-70px)] overflow-y-auto min-h-[calc(100svh-70px)] flex flex-col"
+        class="max-h-[calc(100svh-70px)] overflow-y-hidden min-h-[calc(100svh-70px)] flex flex-col"
       >
-        <div class="mb-4">
+        <div class="min-h-[70px] manxx-h-[70px] py-2">
           <ul
-            class="flex flex-wrap -mb-px text-sm font-medium text-center justify-center py-2"
+            class="flex flex-wrap text-sm font-medium text-center justify-center"
             id="myTab"
             data-tabs-toggle="#myTabContent"
             role="tablist"
           >
-            <li class="mr-2" role="presentation">
+            <li role="presentation">
               <button
                 class="inline-block p-3 border-b-2 rounded-t-lg"
                 id="tree-tab"
@@ -62,7 +62,7 @@
                 Tree
               </button>
             </li>
-            <li class="mr-2" role="presentation">
+            <li role="presentation">
               <button
                 class="inline-block p-3 border-b-2 rounded-t-lg border-transparent hover:text-gray-600 hover:border-gray-300"
                 id="individual-tab"
@@ -203,7 +203,7 @@
               </div>
             </div>
             <div
-              class="rounded-t-3xl bg-[#A6E3E9] px-5 py-2 grow flex flex-col"
+              class="rounded-t-3xl bg-[#A6E3E9] px-5 py-2 grow flex flex-col max-h-[calc(100svh-70px-28px-140px-70px)] min-h-[calc(100svh-70px-28px-140px-70px)] overflow-y-auto"
               id="individualBoard"
             ></div>
           </div>
@@ -213,7 +213,12 @@
             role="tabpanel"
             aria-labelledby="tree-tab"
           >
-            <div class="flex h-[200px] justify-center relative">
+            <div class="flex h-[168px] justify-center relative">
+              <a
+                href="/task"
+                class="absolute right-[20px] bi bi-info-circle text-xl"
+              >
+              </a>
               <img
                 src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExam1pZmt3N2ZtdGR5ejByajZodnliaDU2aWI1cTJrOXRmbWx5YmgxcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/mM5WHUQ7rN4OuDCFfB/giphy.gif"
                 class="absolute w-[65px] aspect-square object-contain bottom-[20px] left-1/2 hidden"
@@ -222,11 +227,11 @@
               <img
                 src="./img/1.png"
                 id="treeImg"
-                class="w-[200px] aspect-square object-contain"
+                class="w-[168px] aspect-square object-contain"
               />
             </div>
             <div
-              class="rounded-t-3xl bg-[#A6E3E9] px-5 py-2 grow flex flex-col"
+              class="rounded-t-3xl bg-[#A6E3E9] px-5 py-2 grow flex flex-col max-h-[calc(100svh-70px-168px-70px)] min-h-[calc(100svh-70px-168px-70px)] overflow-y-auto"
               id="treeBoard"
             ></div>
           </div>
@@ -295,7 +300,9 @@
                         src="https://img.freepik.com/free-icon/user_318-563642.jpg?w=360"
                         class="aspect-square w-12"
                       />
-                      <p class="grow font-medium text-sm">${data[i]["name"]}</p>
+                      <p class="grow font-medium text-sm">${i + 1}. ${
+                    data[i]["name"]
+                  }</p>
                       <div class="font-bold flex gap-2">
                         <i class="bi bi-caret-up-fill text-green-500"></i>
                         <p>${data[i]["points"]}</p>
@@ -321,6 +328,7 @@
                 document.getElementById("treeBoard").innerHTML =
                   `
                   <div class="pos flex gap-4 items-center py-4 px-2">
+                    <img src="https://img.freepik.com/free-icon/user_318-563642.jpg?w=360" class="aspect-square w-12">
                     <div class="flex flex-col grow">
                       <p class="font-medium text-sm">${history["user"]["name"]}</p>
                       <p class="text-xs">${history["task"]["name"]}</p>
@@ -340,7 +348,7 @@
         }
       }
 
-      const scoreMultiplier = 0.05;
+      const scoreMultiplier = 0.025;
 
       function updateTree() {
         let direction = Math.round(Math.random());

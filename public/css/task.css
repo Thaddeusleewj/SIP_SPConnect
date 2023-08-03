@@ -1,0 +1,7 @@
+.task {
+  position: relative;
+}
+
+.task + .task {
+  border-top: solid 1px gray;
+}

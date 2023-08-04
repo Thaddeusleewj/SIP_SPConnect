@@ -493,6 +493,48 @@ app.get("/api/leaderboard", async (req, res) => {
   return res.status(200).send(data);
 });
 
+// Accommodation
+app.get("/accommodation", (req, res) => {
+  return res.render("accommodation");
+});
+
+// Get Accommodation
+app.get("/api/accommodation", async (req, res) => {
+  var { data, error } = await supabase
+    .from("accommodation")
+    .select("*")
+    .order("availability_date");
+  if (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+  console.log(data);
+  return res.status(200).send(data);
+});
+
+// Accommodation
+app.get("/accommodation/:id", (req, res) => {
+  return res.render("listings", {
+    accommodationId: req.params.id,
+  });
+});
+
+// Get Accommodation
+app.get("/api/accommodation/:id", async (req, res) => {
+  let accommodationId = req.params.id;
+  var { data, error } = await supabase
+    .from("accommodation")
+    .select("*")
+    .eq("id", accommodationId);
+  if (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+  console.log(data);
+  console.log(accommodationId);
+  return res.status(200).send(data);
+});
+
 io.on("connection", (socket) => {
   console.log("New user connected");
   socket.emit("clientid", socket.id);

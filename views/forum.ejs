@@ -17,6 +17,10 @@
       src="https://kit.fontawesome.com/825a35d965.js"
       crossorigin="anonymous"
     ></script>
+    <link
+      rel="shortcut icon"
+      href="https://images.prismic.io/wdr-test-icti/3f9387b0e53fb535624c3a559964e5f3871345ac_connect-logo3x.png"
+    />
     <link href="./css/main.css" rel="stylesheet" />
     <link href="./css/forum.css" rel="stylesheet" />
     <title>SPConnect</title>
@@ -114,7 +118,10 @@
           class="border-2 flex-col flex gap-2 border-gray-300 p-3 rounded-lg"
         >
           <div class="flex justify-between items-center">
-            <p class="text-sm">${post["user"]["name"]}</p>
+            <div class="flex gap-2 items-center">
+              <img src="https://img.freepik.com/free-icon/user_318-563642.jpg?w=360" class="w-7 aspect-square"/>
+              <p class="text-sm">${post["user"]["name"]}</p>
+            </div>
             <time class="text-[0.5rem]">${formatDateTime(
               new Date(post["created_at"])
             )}</time>

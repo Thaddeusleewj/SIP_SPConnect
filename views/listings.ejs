@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      const ACCOMMODATION_ID = "<%= accommodationId %>";
+    </script>
+    <script src="/socket.io/socket.io.js" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    />
+    <script
+      src="https://kit.fontawesome.com/825a35d965.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="shortcut icon"
+      href="https://images.prismic.io/wdr-test-icti/3f9387b0e53fb535624c3a559964e5f3871345ac_connect-logo3x.png"
+    />
+    <link href="../css/main.css" rel="stylesheet" />
+    <title>SPConnect</title>
+  </head>
+  <body>
+    <div id="main" class="max-w-md mx-auto relative">
+      <nav class="bg-[#A6E3E9] border-gray-200 sticky">
+        <div
+          class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4 h-[70px]"
+        >
+          <a href="/accommodation" class="flex items-center gap-2">
+            <i class="fa-solid fa-arrow-left text-xl"></i>
+            <img src="https://img.freepik.com/free-icon/user_318-563642.jpg?w=360" id="owner_pic" class="w-10 aspect-square rounded-full" />
+            <span
+              class="self-center text-xl whitespace-nowrap"
+              id="owner"
+              >-</span
+            >
+          </a>
+          <i class="fa-regular fa-comment-dots text-xl ml-auto"></i>
+        </div>
+      </nav>
+      <img
+        class="h-56 w-full object-cover sticky object-center"
+        src="https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg"
+        id="room_pic"
+      />
+      <div
+        class="overflow-y-auto max-h-[calc(100svh-70px-224px-54.4px)] px-4 py-5 flex flex-col gap-3"
+        id="content"
+      ></div>
+      <div
+        class="fixed bottom-0 w-full max-w-md h-14 flex items-center justify-between border-t-2 px-4 gap-3"
+      >
+        <div class="relative w-full">
+          <div
+            class="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none"
+          >
+            <i class="fa-solid fa-pencil"></i>
+          </div>
+          <input
+            type="text"
+            id="input-group-1"
+            class="bg-gray-50 border border-gray-300 text-gray-900 rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 p-2.5 text-[8px] h-8"
+            placeholder="Create a request to find roommate"
+          />
+        </div>
+
+        <button class="flex gap-2 items-center">
+          <i class="fa-regular fa-heart text-xl"></i>
+          <span class="text-xs">Like</span>
+        </button>
+
+        <button class="flex gap-2 items-center">
+          <i class="fa-solid fa-user-plus text-xl"></i>
+          <span class="text-xs">Pairing</span>
+        </button>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      if (!(localStorage.getItem("name") && localStorage.getItem("userid"))) {
+        window.location.href = "/start";
+      }
+
+      const monthNames = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+
+      axios
+        .get(`/api/accommodation/${ACCOMMODATION_ID}`)
+        .then(({ data }) => {
+          let listing = data[0];
+          console.log(listing);
+          document.getElementById("owner_pic").src = listing["owner_pic"];
+          document.getElementById("owner").innerHTML = listing["owner"];
+          document.getElementById("room_pic").src = listing["room_pic"];
+          document.getElementById("content").innerHTML = `
+          <h2 class="text-xl font-bold">${listing["address"]}</h2>
+          <div class="flex justify-center text-xs items-center">
+            <div class="flex gap-2 py-3 px-4 items-center justify-center">
+              <i
+                class="w-6 h-6 flex justify-center items-center fa-solid fa-sack-dollar text-lg text-[#A6E3E9]"
+              ></i>
+              <p>$${listing["price"]} / Month</p>
+            </div>
+            <div class="flex gap-2 py-3 px-4 items-center justify-center border-l-2">
+              <i
+                class="w-6 h-6 flex justify-center items-center fa-solid fa-person-walking text-lg text-[#A6E3E9]"
+              ></i>
+              <p>${listing["time_from"]} mins to ${listing["closest_mrt"]}</p>
+            </div>
+            <div class="flex gap-2 py-3 px-4 items-center justify-center border-l-2">
+              <i
+                class="w-6 h-6 flex justify-center items-center fa-solid fa-user-group text-lg text-[#A6E3E9]"
+              ></i>
+              <p>Room for ${listing["room_for"]}</p>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <p class="text-sm flex items-center gap-2">
+              <span class="font-bold"
+                >Availability Date <i class="fa-solid fa-calendar-days"></i> :</span
+              >
+              <span>${
+                monthNames[new Date(listing["availability_date"]).getMonth()]
+              } ${new Date(listing["availability_date"]).getDate()}, ${new Date(
+            listing["availability_date"]
+          ).getFullYear()}</span>
+            </p>
+          </div>
+          <div class="flex gap-3">
+            <p class="text-sm flex items-center gap-2">
+              <span class="font-bold"
+                >Utilities :</span
+              >
+              <span>${listing["utilities"] ? listing["utilities"] : "-"}</span>
+            </p>
+          </div>
+          <div class="flex gap-3">
+            <p class="text-sm flex items-center gap-2">
+              <span class="font-bold"
+                >Furnishing :</span
+              >
+              <span>${
+                listing["furnishing"] ? listing["furnishing"] : "-"
+              }</span>
+            </p>
+          </div>
+          <div class="flex gap-3">
+            <p class="text-sm flex items-center gap-2">
+              <span class="font-bold"
+                >Amenities :</span
+              >
+              <span>${listing["amenities"] ? listing["amenities"] : "-"}</span>
+            </p>
+          </div>
+          <div class="flex gap-3">
+            <p class="text-sm flex items-center gap-2">
+              <span class="font-bold"
+                >House Rules :</span
+              >
+              <span>${listing["rules"] ? listing["rules"] : "-"}</span>
+            </p>
+          </div>
+          <div class="flex gap-3">
+            <p class="text-sm flex items-center gap-2">
+              <span class="font-bold"
+                >Security Deposit :</span
+              >
+              <span>SGD ${
+                listing["deposit"] ? listing["deposit"] : "0"
+              } (Refundable upon the end of the lease)</span>
+            </p>
+          </div>
+          <div class="flex gap-3">
+            <p class="text-sm flex items-center gap-2">
+              <span class="font-bold"
+                >Lease Duration :</span
+              >
+              <span>Minimum ${
+                listing["lease"] ? listing["lease"] : "0"
+              } months</span>
+            </p>
+          </div>
+          `;
+        })
+        .catch((err) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+    </script>
+  </body>
+</html>

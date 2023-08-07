@@ -1,0 +1,13 @@
+.pos {
+  position: relative;
+}
+
+.pos + .pos {
+  border-top: solid 1px gray;
+}
+
+.wave {
+  background: url(../img/wave.svg);
+  background-size: 325%;
+  background-position: top center;
+}

@@ -17,64 +17,68 @@
       src="https://kit.fontawesome.com/825a35d965.js"
       crossorigin="anonymous"
     ></script>
-    <link rel="shortcut icon" href="https://images.prismic.io/wdr-test-icti/3f9387b0e53fb535624c3a559964e5f3871345ac_connect-logo3x.png" />
+    <link
+      rel="shortcut icon"
+      href="https://images.prismic.io/wdr-test-icti/3f9387b0e53fb535624c3a559964e5f3871345ac_connect-logo3x.png"
+    />
+    <link href="./css/index.css" rel="stylesheet" />
     <link href="./css/main.css" rel="stylesheet" />
     <title>SPConnect</title>
   </head>
   <body>
-    <a
-      href="./chat"
-      type="button"
-      class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-    >
-      Chat </a
-    ><a
-      href="./translate"
-      type="button"
-      class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-    >
-      Translate </a
-    ><a
-      href="./event"
-      type="button"
-      class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-    >
-      Event </a
-    ><a
-      href="./forum"
-      type="button"
-      class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-    >
-      SP Forum
-    </a>
-    <a
-      href="./task"
-      type="button"
-      class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-    >
-      Task
-    </a>
-    <a
-      href="./leaderboard"
-      type="button"
-      class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-    >
-      Leaderboard
-    </a>
-    <a
-      href="./accommodation"
-      type="button"
-      class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-    >
-      Accommodation
-    </a>
-    <button
-      id="logout"
-      type="button"
-      class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-    >
-      Log Out
-    </button>
+    <div id="main" class="max-w-md mx-auto relative">
+      <nav
+        class="border-gray-200 sticky wave h-[180px] relative flex flex-col items-center justify-start pt-4 overflow-hidden"
+      >
+        <h1 class="text-2xl font-bold">Welcome Back,</h1>
+        <h1 class="text-3xl font-bold" id="name">-</h1>
+        <img
+          src="https://img.freepik.com/free-icon/user_318-563642.jpg?w=360"
+          class="border-2 border-black rounded-full aspect-square w-16 mt-2"
+        />
+        <h1 class="text-base font-bold" id="phoneNo">-</h1>
+      </nav>
+      <div class="flex flex-col items-stretch justify-center text-xl px-4">
+        <a href="./accommodation" class="flex gap-8 items-center pos px-8 py-3">
+          <i class="fa-solid fa-house"></i>
+          <p>Accommodation</p>
+        </a>
+        <a href="./chat" class="flex gap-8 items-center pos px-8 py-3">
+          <i class="fa-solid fa-message"></i>
+          <p>Chat</p>
+        </a>
+        <a href="./event" class="flex gap-8 items-center pos px-8 py-3">
+          <i class="fa-regular fa-calendar-days"></i>
+          <p>Event</p>
+        </a>
+        <a href="./task" class="flex gap-8 items-center pos px-8 py-3">
+          <i class="fa-solid fa-list-check"></i>
+          <p>Task</p>
+        </a>
+        <a href="./leaderboard" class="flex gap-8 items-center pos px-8 py-3">
+          <i class="bi bi-trophy-fill"></i>
+          <p>Leaderboard</p>
+        </a>
+        <a href="./translate" class="flex gap-8 items-center pos px-8 py-3">
+          <i class="bi bi-translate"></i>
+          <p>Translate</p>
+        </a>
+        <a href="./forum" class="flex gap-8 items-center pos px-8 py-3">
+          <i class="fa-solid fa-globe"></i>
+          <p>SP Forum</p>
+        </a>
+        <button
+          id="logout"
+          type="button"
+          class="text-white bg-blue-700 hover:bg-blue-800 w-1/2 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none self-center my-2"
+        >
+          Log Out
+        </button>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
@@ -86,6 +90,10 @@
         localStorage.clear();
         window.location.href = "/start";
       });
+
+      document.getElementById("name").innerHTML = localStorage.getItem("name");
+      document.getElementById("phoneNo").innerHTML =
+        localStorage.getItem("userid");
     </script>
   </body>
 </html>

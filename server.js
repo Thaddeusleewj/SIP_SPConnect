@@ -4,8 +4,6 @@ const server = require("http").Server(app);
 const io = require("socket.io")(server);
 const supabase = require("./config/supabase");
 const PORT = 8081;
-const Filter = require("bad-words");
-const filter = new Filter();
 require("dotenv").config();
 
 app.set("view engine", "ejs");
@@ -99,6 +97,9 @@ app.post("/api/start", async (req, res) => {
     .insert([
       { userID: phoneNo, chatID: 1 },
       { userID: phoneNo, chatID: 2 },
+      { userID: phoneNo, chatID: 3 },
+      { userID: phoneNo, chatID: 8 },
+      { userID: phoneNo, chatID: 9 },
     ])
     .select();
   if (error) {
@@ -135,7 +136,7 @@ async function uploadMessage(roomId, phoneNo, message) {
       {
         userID: parseInt(phoneNo),
         chatID: roomId.split("_")[0],
-        content: filter.clean(message),
+        content: message,
       },
     ])
     .select();
@@ -165,7 +166,7 @@ app.post("/api/chat/:roomID", async (req, res) => {
 // Create chat
 app.post("/api/chat", async (req, res) => {
   let userID = req.body.id;
-  let chatName = filter.clean(req.body.chatName);
+  let chatName = req.body.chatName;
   var { data, error } = await supabase
     .from("chat")
     .select()
@@ -317,7 +318,7 @@ app.post("/api/post", async (req, res) => {
   let { title, content, id } = req.body;
   var { data, error } = await supabase
     .from("post")
-    .insert([{ title: filter.clean(title), content: filter.clean(content) }])
+    .insert([{ title: title, content: content }])
     .select();
   if (error) {
     console.log(error);
@@ -553,7 +554,7 @@ io.on("connection", (socket) => {
     if ("id" in output) {
       io.to(roomId).emit("message", {
         user: userID,
-        message: filter.clean(message),
+        message: message,
         id: output["id"],
       });
     }

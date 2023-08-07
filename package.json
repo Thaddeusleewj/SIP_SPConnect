@@ -18,7 +18,6 @@
   "homepage": "https://github.com/Thaddeusleewj/SIP_SPConnect#readme",
   "dependencies": {
     "@supabase/supabase-js": "^2.2.3",
-    "bad-words": "^3.0.4",
     "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
